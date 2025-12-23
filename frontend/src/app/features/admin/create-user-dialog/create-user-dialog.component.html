@@ -1,0 +1,98 @@
+<div class="modern-dialog">
+  <!-- Clean Header -->
+  <div class="dialog-header">
+    <h2>Add user</h2>
+    <button mat-icon-button mat-dialog-close class="close-btn">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Simple Form -->
+  <div class="dialog-content">
+    <form [formGroup]="createUserForm" (ngSubmit)="onSubmit()">
+      
+      <div class="form-field">
+        <label>Name</label>
+        <mat-form-field appearance="outline" class="clean-field">
+          <input matInput 
+                 formControlName="username" 
+                 placeholder="Enter full name"
+                 autocomplete="name">
+          <mat-error *ngIf="createUserForm.get('username')?.hasError('required')">
+            Name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-field">
+        <label>Email</label>
+        <mat-form-field appearance="outline" class="clean-field">
+          <input matInput 
+                 type="email"
+                 formControlName="email" 
+                 placeholder="name@company.com"
+                 autocomplete="email">
+          <mat-error *ngIf="createUserForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="createUserForm.get('email')?.hasError('email')">
+            Please enter a valid email
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-field">
+        <label>Password</label>
+        <mat-form-field appearance="outline" class="clean-field">
+          <input matInput 
+                 [type]="hidePassword ? 'password' : 'text'"
+                 formControlName="password" 
+                 placeholder="Create password"
+                 autocomplete="new-password">
+          <button mat-icon-button 
+                  matSuffix 
+                  type="button"
+                  (click)="hidePassword = !hidePassword"
+                  class="password-toggle">
+            <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="createUserForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="createUserForm.get('password')?.hasError('minlength')">
+            Password must be at least 6 characters
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-field">
+        <label>Role</label>
+        <mat-form-field appearance="outline" class="clean-field">
+          <mat-select formControlName="role">
+            <mat-option value="USER">User</mat-option>
+            <mat-option value="ADMIN">Admin</mat-option>
+          </mat-select>
+          <mat-error *ngIf="createUserForm.get('role')?.hasError('required')">
+            Please select a role
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+
+  <!-- Actions -->
+  <div class="dialog-actions">
+    <button mat-button 
+            mat-dialog-close 
+            class="cancel-btn">
+      Cancel
+    </button>
+    
+    <button mat-flat-button 
+            (click)="onSubmit()"
+            class="create-btn"
+            [disabled]="!createUserForm.valid || loading">
+      {{ loading ? 'Creating...' : 'Add user' }}
+    </button>
+  </div>
+</div>

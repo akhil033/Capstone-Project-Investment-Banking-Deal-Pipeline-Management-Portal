@@ -1,0 +1,202 @@
+/* Modern Dialog Styles */
+.modern-dialog {
+  width: 480px;
+  max-width: 90vw;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+/* Header */
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 0;
+  margin-bottom: 24px;
+}
+
+.dialog-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.close-btn {
+  color: #64748b !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.close-btn:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.close-btn mat-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Content */
+.dialog-content {
+  padding: 0 24px;
+  margin-bottom: 32px;
+}
+
+.form-field {
+  margin-bottom: 20px;
+}
+
+.form-field label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+/* Clean Form Fields */
+::ng-deep .clean-field {
+  width: 100% !important;
+}
+
+::ng-deep .clean-field .mat-mdc-form-field-flex {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  padding: 0 12px !important;
+  transition: all 0.2s ease !important;
+}
+
+::ng-deep .clean-field:hover .mat-mdc-form-field-flex {
+  border-color: #cbd5e1 !important;
+  background: #f1f5f9 !important;
+}
+
+::ng-deep .clean-field.mat-focused .mat-mdc-form-field-flex {
+  border-color: #3b82f6 !important;
+  background: white !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+::ng-deep .clean-field .mat-mdc-form-field-label-wrapper {
+  display: none !important;
+}
+
+::ng-deep .clean-field input {
+  color: #0f172a !important;
+  font-size: 14px !important;
+  padding: 12px 0 !important;
+  background: transparent !important;
+}
+
+::ng-deep .clean-field input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+::ng-deep .clean-field .mat-mdc-select-value {
+  color: #0f172a !important;
+  font-size: 14px !important;
+}
+
+::ng-deep .clean-field .mat-mdc-select-placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Password Toggle */
+.password-toggle {
+  color: #64748b !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.password-toggle:hover {
+  color: #0f172a !important;
+}
+
+.password-toggle mat-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* Error Messages */
+::ng-deep .mat-mdc-form-field-error {
+  color: #ef4444 !important;
+  font-size: 12px !important;
+  margin-top: 4px !important;
+}
+
+/* Actions */
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.cancel-btn {
+  color: #64748b !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  padding: 0 16px !important;
+  height: 36px !important;
+}
+
+.cancel-btn:hover {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.create-btn {
+  background: #0f172a !important;
+  color: white !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+  padding: 0 20px !important;
+  height: 36px !important;
+  border: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+.create-btn:hover:not([disabled]) {
+  background: #1e293b !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.create-btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .modern-dialog {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .dialog-header,
+  .dialog-content,
+  .dialog-actions {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  .dialog-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  
+  .cancel-btn,
+  .create-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}

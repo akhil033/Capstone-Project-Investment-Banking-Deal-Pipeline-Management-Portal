@@ -1,0 +1,7 @@
+/* Deal Form Component Styles - Placeholder for future implementation */
+
+.deal-form-container {
+  padding: var(--spacing-lg);
+  background: var(--color-surface);
+  border-radius: var(--border-radius-lg);
+}

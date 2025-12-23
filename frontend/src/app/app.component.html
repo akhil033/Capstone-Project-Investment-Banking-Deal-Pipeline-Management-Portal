@@ -1,0 +1,67 @@
+<!-- Login Page (No Layout) -->
+<div *ngIf="isLoginPage()" class="login-wrapper">
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Main Application Layout (Authenticated) -->
+<div *ngIf="!isLoginPage() && currentUser" class="app-layout">
+  
+  <!-- Top Navigation Bar -->
+  <mat-toolbar class="app-topbar">
+    <div class="topbar-content">
+      <div class="topbar-left">
+        <mat-icon class="app-logo">business_center</mat-icon>
+        <span class="app-title">Deal Pipeline Management</span>
+      </div>
+      
+      <div class="topbar-right">
+        <div class="user-info">
+          <span class="user-name">{{ currentUser.username }}</span>
+          <span class="user-role badge-neutral">{{ getRoleBadgeText() }}</span>
+        </div>
+        
+        <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-trigger">
+          <mat-icon>account_circle</mat-icon>
+          <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+        </button>
+        
+        <mat-menu #userMenu="matMenu" class="user-dropdown">
+          <div class="dropdown-header">
+            <div class="dropdown-user-name">{{ currentUser.username }}</div>
+            <div class="dropdown-user-email">{{ currentUser.email }}</div>
+          </div>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+  </mat-toolbar>
+  
+  <!-- Sidebar + Content -->
+  <div class="app-container">
+    
+    <!-- Left Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <nav class="sidebar-nav">
+        <a routerLink="/deals" routerLinkActive="active" class="nav-item">
+          <mat-icon>dashboard</mat-icon>
+          <span>Deals</span>
+        </a>
+        
+        <a *ngIf="isAdmin" routerLink="/admin/users" routerLinkActive="active" class="nav-item">
+          <mat-icon>people</mat-icon>
+          <span>User Management</span>
+        </a>
+      </nav>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main class="app-content">
+      <router-outlet></router-outlet>
+    </main>
+    
+  </div>
+</div>

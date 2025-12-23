@@ -1,0 +1,30 @@
+# Root .gitignore
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Docker
+.docker/
+
+# Test Reports
+*_COVERAGE_REPORT.md
+*_TEST_REPORT.md
+test-output.txt
+
+

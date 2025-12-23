@@ -1,0 +1,108 @@
+<div class="deal-form-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>
+        {{ isEditMode ? 'Edit Deal' : 'Create New Deal' }}
+      </mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div *ngIf="loading" class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+      
+      <form [formGroup]="dealForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Client Name</mat-label>
+            <input matInput formControlName="clientName" placeholder="Enter client name">
+            <mat-error *ngIf="dealForm.get('clientName')?.invalid">
+              {{ getErrorMessage('clientName') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Deal Type</mat-label>
+            <mat-select formControlName="dealType">
+              <mat-option *ngFor="let type of dealTypes" [value]="type">
+                {{ type }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="dealForm.get('dealType')?.invalid">
+              Deal type is required
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Sector</mat-label>
+            <input matInput formControlName="sector" placeholder="Enter sector">
+            <mat-error *ngIf="dealForm.get('sector')?.invalid">
+              Sector is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <!-- Only show deal value in create mode, hide in edit mode -->
+          <mat-form-field appearance="outline" class="half-width" *ngIf="!isEditMode">
+            <mat-label>Deal Value</mat-label>
+            <input matInput type="number" formControlName="dealValue" placeholder="Enter deal value">
+            <span matPrefix>$&nbsp;</span>
+            <mat-error *ngIf="dealForm.get('dealValue')?.invalid">
+              {{ getErrorMessage('dealValue') }}
+            </mat-error>
+            <mat-hint *ngIf="!isAdmin">Deal value can only be set by admins</mat-hint>
+          </mat-form-field>
+          
+          <!-- Show info message in edit mode for admins -->
+          <div class="info-message" *ngIf="isEditMode && isAdmin">
+            <mat-icon>info</mat-icon>
+            <span>To update deal value, use the "Update Deal Value" section on the deal detail page.</span>
+          </div>
+          
+          <mat-form-field appearance="outline" [class.full-width]="isEditMode" [class.half-width]="!isEditMode">
+            <mat-label>Current Stage</mat-label>
+            <mat-select formControlName="currentStage">
+              <mat-option *ngFor="let stage of dealStages" [value]="stage">
+                {{ formatStageName(stage) }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="dealForm.get('currentStage')?.invalid">
+              Stage is required
+            </mat-error>
+            <mat-hint *ngIf="isEditMode">Stage can only be changed from the deal detail page</mat-hint>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Summary</mat-label>
+            <textarea matInput formControlName="summary" rows="4" placeholder="Enter deal summary"></textarea>
+            <mat-error *ngIf="dealForm.get('summary')?.invalid">
+              {{ getErrorMessage('summary') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Assigned To</mat-label>
+            <input matInput formControlName="assignedTo" placeholder="Enter username">
+            <mat-hint>Optional: Assign this deal to a specific user</mat-hint>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-actions">
+          <button mat-raised-button type="button" (click)="onCancel()">
+            Cancel
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+            {{ isEditMode ? 'Update' : 'Create' }} Deal
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

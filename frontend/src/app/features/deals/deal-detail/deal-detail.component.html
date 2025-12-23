@@ -1,0 +1,191 @@
+<div class="deal-detail-page" *ngIf="!loading && deal">
+  
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <button mat-icon-button (click)="onBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-info">
+        <h1 class="page-title">{{ deal.clientName }}</h1>
+        <div class="header-meta">
+          <span class="deal-type-badge">{{ deal.dealType }}</span>
+          <span class="stage-indicator" [ngClass]="getStageClass(deal.currentStage)">
+            <mat-icon class="stage-icon">{{ getStageIcon(deal.currentStage) }}</mat-icon>
+            <span>{{ formatStageName(deal.currentStage) }}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <ng-container *ngIf="!isEditMode">
+        <button mat-raised-button (click)="onEdit()" class="edit-button">
+          <mat-icon>edit</mat-icon>
+          <span>Edit Deal</span>
+        </button>
+        <button mat-raised-button (click)="onDelete()" *ngIf="isAdmin" class="delete-button">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </ng-container>
+      <ng-container *ngIf="isEditMode">
+        <button mat-raised-button (click)="onSaveEdit()" class="save-button">
+          <mat-icon>save</mat-icon>
+          <span>Save Changes</span>
+        </button>
+        <button mat-button (click)="onCancelEdit()" class="cancel-button">
+          <mat-icon>cancel</mat-icon>
+          <span>Cancel</span>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="page-divider"></div>
+
+  <!-- Deal Information Section -->
+  <div class="content-section">
+    <div class="section-header">
+      <h2 class="section-title">Deal Information</h2>
+      <p class="section-subtitle">Core details and business information</p>
+    </div>
+    
+    <div class="info-container">
+      
+      <!-- Edit Mode Form -->
+      <form [formGroup]="editForm" *ngIf="isEditMode" class="edit-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Client Name</label>
+            <mat-form-field class="form-field" appearance="outline">
+              <input matInput formControlName="clientName" placeholder="Enter client name">
+              <mat-error *ngIf="editForm.get('clientName')?.invalid">
+                Client name is required (min 2 characters)
+              </mat-error>
+            </mat-form-field>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Deal Type</label>
+            <mat-form-field class="form-field" appearance="outline">
+              <mat-select formControlName="dealType" placeholder="Select deal type">
+                <mat-option *ngFor="let type of dealTypes" [value]="type">{{ type }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="editForm.get('dealType')?.invalid">
+                Deal type is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Sector</label>
+            <mat-form-field class="form-field" appearance="outline">
+              <input matInput formControlName="sector" placeholder="Enter sector">
+              <mat-error *ngIf="editForm.get('sector')?.invalid">
+                Sector is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Assigned To</label>
+            <mat-form-field class="form-field" appearance="outline">
+              <input matInput formControlName="assignedTo" placeholder="Enter assignee name">
+            </mat-form-field>
+          </div>
+          
+          <div class="form-group full-width">
+            <label class="form-label">Summary</label>
+            <mat-form-field class="form-field" appearance="outline">
+              <textarea matInput formControlName="summary" rows="4" placeholder="Enter deal summary"></textarea>
+              <mat-error *ngIf="editForm.get('summary')?.invalid">
+                Summary is required (min 10 characters)
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+      
+      <!-- View Mode Display -->
+      <div class="info-display" *ngIf="!isEditMode">
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">Client Name</div>
+            <div class="info-value">{{ deal.clientName }}</div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-label">Sector</div>
+            <div class="info-value">{{ deal.sector }}</div>
+          </div>
+          
+          <div class="info-item" *ngIf="isAdmin">
+            <div class="info-label">Deal Value</div>
+            <div class="info-value deal-value">{{ deal.dealValue | currency:'USD':'symbol':'1.0-0' }}</div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-label">Assigned To</div>
+            <div class="info-value">{{ deal.assignedTo || 'Unassigned' }}</div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-label">Created</div>
+            <div class="info-value date-value">{{ formatDate(deal.createdAt) }}</div>
+          </div>
+          
+          <div class="info-item">
+            <div class="info-label">Last Updated</div>
+            <div class="info-value date-value">{{ formatDate(deal.updatedAt) }}</div>
+          </div>
+          
+          <div class="info-item full-width">
+            <div class="info-label">Summary</div>
+            <div class="info-value summary-value">{{ deal.summary }}</div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="page-divider"></div>
+
+  <!-- Notes Section -->
+  <div class="content-section">
+    <div class="section-header">
+      <h2 class="section-title">Notes & Timeline</h2>
+      <p class="section-subtitle">Activity history and deal notes</p>
+    </div>
+    
+    <div class="notes-container">
+      <div class="notes-timeline" *ngIf="deal.notes && deal.notes.length > 0">
+        <div class="timeline-item" *ngFor="let note of deal.notes; let i = index">
+          <div class="timeline-marker">
+            <mat-icon>comment</mat-icon>
+          </div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-author">{{ note.userId || 'Unknown' }}</span>
+              <span class="timeline-date">{{ formatDate(note.timestamp) }}</span>
+            </div>
+            <div class="timeline-text">{{ note.note }}</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="empty-notes" *ngIf="!deal.notes || deal.notes.length === 0">
+        <mat-icon>note_add</mat-icon>
+        <h3>No Notes Yet</h3>
+        <p>Deal notes and timeline will appear here as they are added.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Loading State -->
+<div class="loading-overlay" *ngIf="loading">
+  <mat-spinner diameter="48"></mat-spinner>
+  <p>Loading deal details...</p>
+</div>

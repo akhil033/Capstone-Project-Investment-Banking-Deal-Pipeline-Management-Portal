@@ -1,0 +1,313 @@
+<div class="enterprise-dialog">
+  
+  <!-- Dialog Header -->
+  <div class="dialog-header">
+    <div class="header-left">
+      <div class="header-icon">
+        <mat-icon>edit</mat-icon>
+      </div>
+      <div class="header-text">
+        <h2 class="dialog-title">Edit Deal</h2>
+        <p class="dialog-subtitle">{{ deal.clientName }}</p>
+      </div>
+    </div>
+    <button mat-icon-button (click)="onClose()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Dialog Content -->
+  <div class="dialog-content">
+    <mat-tab-group animationDuration="200ms" class="dialog-tabs">
+      
+      <!-- Basic Information Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <div class="tab-label">
+            <mat-icon>info</mat-icon>
+            <span>Basic Info</span>
+          </div>
+        </ng-template>
+        
+        <div class="tab-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Basic Information</h3>
+            <p class="panel-description">Update core deal details and business information</p>
+          </div>
+          
+          <form [formGroup]="basicForm" class="form-container">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="field-label">Client Name</label>
+                <mat-form-field class="field-input" appearance="outline">
+                  <input matInput formControlName="clientName" placeholder="Enter client name">
+                  <mat-error *ngIf="basicForm.get('clientName')?.invalid">
+                    Client name is required (min 2 characters)
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-group">
+                <label class="field-label">Deal Type</label>
+                <mat-form-field class="field-input" appearance="outline">
+                  <mat-select formControlName="dealType" placeholder="Select deal type">
+                    <mat-option *ngFor="let type of dealTypes" [value]="type">
+                      {{ type }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>Deal type is required</mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-group">
+                <label class="field-label">Sector</label>
+                <mat-form-field class="field-input" appearance="outline">
+                  <input matInput formControlName="sector" placeholder="Enter sector">
+                  <mat-error>Sector is required</mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-group">
+                <label class="field-label">Assigned To</label>
+                <mat-form-field class="field-input" appearance="outline">
+                  <input matInput formControlName="assignedTo" placeholder="Enter assignee name">
+                </mat-form-field>
+              </div>
+
+              <div class="form-group full-width">
+                <label class="field-label">Summary</label>
+                <mat-form-field class="field-input" appearance="outline">
+                  <textarea matInput formControlName="summary" rows="4" placeholder="Enter deal summary"></textarea>
+                  <mat-error *ngIf="basicForm.get('summary')?.invalid">
+                    Summary is required (min 10 characters)
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button mat-raised-button (click)="onUpdateBasic()" 
+                      [disabled]="basicForm.invalid || saving"
+                      class="primary-action">
+                <mat-icon>save</mat-icon>
+                <span>Update Basic Info</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-tab>
+
+      <!-- Deal Stage Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <div class="tab-label">
+            <mat-icon>timeline</mat-icon>
+            <span>Stage</span>
+          </div>
+        </ng-template>
+        
+        <div class="tab-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Deal Stage</h3>
+            <p class="panel-description">Update the current stage of the deal</p>
+          </div>
+          
+          <div class="stage-content">
+            <div class="current-stage-display">
+              <label class="stage-label">Current Stage</label>
+              <div class="stage-badge current" [ngClass]="getStageClass(deal.currentStage)">
+                <mat-icon class="stage-icon">{{ getStageIcon(deal.currentStage) }}</mat-icon>
+                <span>{{ formatStageName(deal.currentStage) }}</span>
+              </div>
+            </div>
+
+            <form [formGroup]="stageForm" class="stage-form">
+              <div class="form-group">
+                <label class="field-label">Update to New Stage</label>
+                <mat-form-field class="field-input" appearance="outline">
+                  <mat-select formControlName="stage" placeholder="Select new stage">
+                    <mat-option *ngFor="let stage of dealStages" [value]="stage">
+                      <div class="stage-option">
+                        <mat-icon>{{ getStageIcon(stage) }}</mat-icon>
+                        <span>{{ formatStageName(stage) }}</span>
+                      </div>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              
+              <div class="stage-guide">
+                <h4 class="guide-title">Stage Definitions</h4>
+                <div class="stage-definitions">
+                  <div class="stage-definition">
+                    <div class="stage-badge stage-prospect">
+                      <mat-icon>visibility</mat-icon>
+                      <span>Prospect</span>
+                    </div>
+                    <span class="definition-text">Initial contact and qualification</span>
+                  </div>
+                  <div class="stage-definition">
+                    <div class="stage-badge stage-under-evaluation">
+                      <mat-icon>rate_review</mat-icon>
+                      <span>Under Evaluation</span>
+                    </div>
+                    <span class="definition-text">Due diligence and analysis</span>
+                  </div>
+                  <div class="stage-definition">
+                    <div class="stage-badge stage-termsheet-submitted">
+                      <mat-icon>description</mat-icon>
+                      <span>Term Sheet Submitted</span>
+                    </div>
+                    <span class="definition-text">Formal proposal presented</span>
+                  </div>
+                  <div class="stage-definition">
+                    <div class="stage-badge stage-closed">
+                      <mat-icon>check_circle</mat-icon>
+                      <span>Closed</span>
+                    </div>
+                    <span class="definition-text">Deal successfully completed</span>
+                  </div>
+                  <div class="stage-definition">
+                    <div class="stage-badge stage-lost">
+                      <mat-icon>cancel</mat-icon>
+                      <span>Lost</span>
+                    </div>
+                    <span class="definition-text">Deal terminated or lost</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button mat-raised-button (click)="onUpdateStage()" 
+                        [disabled]="stageForm.invalid || saving"
+                        class="primary-action">
+                  <mat-icon>timeline</mat-icon>
+                  <span>Update Stage</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Deal Value Tab (Admin Only) -->
+      <mat-tab [disabled]="!isAdmin">
+        <ng-template mat-tab-label>
+          <div class="tab-label">
+            <mat-icon>attach_money</mat-icon>
+            <span>Deal Value</span>
+          </div>
+        </ng-template>
+        
+        <div class="tab-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Deal Value</h3>
+            <p class="panel-description">Update financial information (Admin Only)</p>
+          </div>
+          
+          <div *ngIf="!isAdmin" class="access-denied">
+            <div class="access-denied-content">
+              <mat-icon class="access-icon">lock</mat-icon>
+              <h4>Admin Access Required</h4>
+              <p>Only administrators can modify deal values</p>
+            </div>
+          </div>
+          
+          <form *ngIf="isAdmin" [formGroup]="valueForm" class="value-form">
+            <div class="current-value-display">
+              <label class="value-label">Current Deal Value</label>
+              <div class="value-amount">{{ formatCurrency(deal.dealValue) }}</div>
+            </div>
+
+            <div class="form-group">
+              <label class="field-label">Update Deal Value</label>
+              <mat-form-field class="field-input" appearance="outline">
+                <input matInput type="number" formControlName="dealValue" min="0" placeholder="0.00">
+                <span matPrefix>$ </span>
+                <mat-error *ngIf="valueForm.get('dealValue')?.invalid">
+                  Deal value must be a positive number
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="value-warning">
+              <mat-icon class="warning-icon">info</mat-icon>
+              <span class="warning-text">Changing the deal value will create an audit log entry</span>
+            </div>
+
+            <div class="form-actions">
+              <button mat-raised-button (click)="onUpdateValue()" 
+                      [disabled]="valueForm.invalid || saving"
+                      class="primary-action">
+                <mat-icon>attach_money</mat-icon>
+                <span>Update Deal Value</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </mat-tab>
+
+      <!-- Notes Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <div class="tab-label">
+            <mat-icon>note</mat-icon>
+            <span>Notes</span>
+          </div>
+        </ng-template>
+        
+        <div class="tab-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Deal Notes</h3>
+            <p class="panel-description">Add and review deal-related notes and comments</p>
+          </div>
+          
+          <form [formGroup]="noteForm" class="notes-form">
+            <div class="form-group">
+              <label class="field-label">Add Note</label>
+              <mat-form-field class="field-input" appearance="outline">
+                <textarea matInput formControlName="note" 
+                         rows="6" 
+                         placeholder="Enter your note here...">
+                </textarea>
+                <mat-error *ngIf="noteForm.get('note')?.invalid">
+                  Note is required (min 5 characters)
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-actions">
+              <button mat-raised-button (click)="onAddNote()" 
+                      [disabled]="noteForm.invalid || saving"
+                      class="primary-action">
+                <mat-icon>add_comment</mat-icon>
+                <span>Add Note</span>
+              </button>
+            </div>
+          </form>
+
+          <div class="notes-history" *ngIf="deal.notes && deal.notes.length > 0">
+            <div class="history-header">
+              <h4 class="history-title">Recent Notes</h4>
+              <span class="notes-count">{{ deal.notes.length }} total</span>
+            </div>
+            
+            <div class="notes-timeline">
+              <div *ngFor="let note of deal.notes | slice:0:3" class="note-item">
+                <div class="note-indicator"></div>
+                <div class="note-card">
+                  <div class="note-header">
+                    <span class="note-author">{{ note.userId || 'System' }}</span>
+                    <span class="note-date">{{ formatDate(note.timestamp) }}</span>
+                  </div>
+                  <div class="note-content">{{ note.note }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      
+    </mat-tab-group>
+  </div>
+</div>

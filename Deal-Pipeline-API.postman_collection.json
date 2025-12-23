@@ -1,0 +1,543 @@
+{
+	"info": {
+		"_postman_id": "deal-pipeline-api",
+		"name": "Deal Pipeline Management API",
+		"description": "Complete API collection for Investment Banking Deal Pipeline Management Portal",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"jwt_token\", jsonData.token);",
+									"    pm.environment.set(\"user_id\", jsonData.userId);",
+									"    pm.environment.set(\"username\", jsonData.username);",
+									"    console.log(\"Token saved: \" + jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with username and password to get JWT token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"me"
+							]
+						},
+						"description": "Get current authenticated user's profile"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Create User (Admin Only)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"john.doe\",\n  \"email\": \"john.doe@investbank.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"John Doe\",\n  \"role\": \"USER\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						},
+						"description": "Create a new user (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users (Admin Only)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						},
+						"description": "Get list of all users (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Status (Admin Only)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/users/:userId/status?active=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users",
+								":userId",
+								"status"
+							],
+							"query": [
+								{
+									"key": "active",
+									"value": "true",
+									"description": "true to activate, false to deactivate"
+								}
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{user_id}}",
+									"description": "User ID to update"
+								}
+							]
+						},
+						"description": "Activate or deactivate a user (Admin only)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Deals",
+			"item": [
+				{
+					"name": "Create Deal",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"deal_id\", jsonData.id);",
+									"    console.log(\"Deal ID saved: \" + jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"clientName\": \"John Smith - Tech Innovations Inc.\",\n  \"dealType\": \"M&A\",\n  \"sector\": \"Technology\",\n  \"dealValue\": 5000000,\n  \"currentStage\": \"Prospect\",\n  \"summary\": \"Potential M&A deal with Tech Innovations Inc. focusing on cloud infrastructure acquisition\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/deals",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deals"
+							]
+						},
+						"description": "Create a new deal (USER or ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Deals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deals",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deals"
+							]
+						},
+						"description": "Get all deals (USER sees limited info, ADMIN sees all)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Deals Summary",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deals/summary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deals",
+								"summary"
+							]
+						},
+						"description": "Get summarized view of all deals"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Deal by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deals/:dealId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deals",
+								":dealId"
+							],
+							"variable": [
+								{
+									"key": "dealId",
+									"value": "{{deal_id}}",
+									"description": "Deal ID"
+								}
+							]
+						},
+						"description": "Get specific deal by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Deal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"clientName\": \"John Smith - Tech Innovations Inc. (Updated)\",\n  \"dealType\": \"M&A - Strategic Acquisition\",\n  \"sector\": \"Technology\",\n  \"summary\": \"Updated deal summary: Client confirmed interest in expanding cloud infrastructure portfolio\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/deals/:dealId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deals",
+								":dealId"
+							],
+							"variable": [
+								{
+									"key": "dealId",
+									"value": "{{deal_id}}",
+									"description": "Deal ID"
+								}
+							]
+						},
+						"description": "Update deal details (USER or ADMIN)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Deal Stage",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"stage\": \"UnderEvaluation\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/deals/:dealId/stage",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deals",
+								":dealId",
+								"stage"
+							],
+							"variable": [
+								{
+									"key": "dealId",
+									"value": "{{deal_id}}",
+									"description": "Deal ID"
+								}
+							]
+						},
+						"description": "Update deal stage (Prospect, UnderEvaluation, TermSheetSubmitted, Closed, Lost)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Deal Value (Admin Only)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dealValue\": 7500000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/deals/:dealId/value",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deals",
+								":dealId",
+								"value"
+							],
+							"variable": [
+								{
+									"key": "dealId",
+									"value": "{{deal_id}}",
+									"description": "Deal ID"
+								}
+							]
+						},
+						"description": "Update deal value (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Note to Deal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Had initial meeting with client. Very interested in M&A options. Need to prepare detailed proposal.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/deals/:dealId/notes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deals",
+								":dealId",
+								"notes"
+							],
+							"variable": [
+								{
+									"key": "dealId",
+									"value": "{{deal_id}}",
+									"description": "Deal ID"
+								}
+							]
+						},
+						"description": "Add a note to a deal"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Deal (Admin Only)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/deals/:dealId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"deals",
+								":dealId"
+							],
+							"variable": [
+								{
+									"key": "dealId",
+									"value": "{{deal_id}}",
+									"description": "Deal ID"
+								}
+							]
+						},
+						"description": "Delete a deal (Admin only)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
