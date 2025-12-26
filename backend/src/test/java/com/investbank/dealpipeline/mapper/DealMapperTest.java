@@ -67,7 +67,7 @@ class DealMapperTest {
     }
 
     @Test
-    void shouldExcludeDealValueForUserRole() {
+    void shouldIncludeDealValueForUserRole() {
         // Given
         Deal deal = Deal.builder()
                 .id("deal123")
@@ -89,7 +89,7 @@ class DealMapperTest {
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.getDealValue()).isNull();
+        assertThat(response.getDealValue()).isEqualTo(1000000L);
         assertThat(response.getClientName()).isEqualTo("ABC Corp");
     }
 

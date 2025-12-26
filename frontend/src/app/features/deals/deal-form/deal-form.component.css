@@ -1,7 +1,275 @@
-/* Deal Form Component Styles - Placeholder for future implementation */
+/* ==========================================
+   DEAL FORM - ENTERPRISE DESIGN
+   ========================================== */
 
 .deal-form-container {
-  padding: var(--spacing-lg);
-  background: var(--color-surface);
-  border-radius: var(--border-radius-lg);
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+/* === FORM CARD === */
+.form-card {
+  background: var(--color-surface-lighter) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-xl) !important;
+  border: 1px solid var(--color-border-subtle) !important;
+  overflow: visible !important;
+}
+
+/* Card Header */
+::ng-deep .form-card .mat-mdc-card-header {
+  background: linear-gradient(135deg, var(--color-slate-50) 0%, var(--color-slate-100) 100%);
+  padding: var(--spacing-2xl) !important;
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin: 0 !important;
+}
+
+::ng-deep .form-card .mat-mdc-card-title {
+  font-size: var(--font-size-2xl) !important;
+  font-weight: var(--font-weight-bold) !important;
+  color: var(--color-text-primary) !important;
+  margin: 0 !important;
+  letter-spacing: -0.02em;
+}
+
+/* Card Content */
+::ng-deep .form-card .mat-mdc-card-content {
+  padding: var(--spacing-2xl) !important;
+}
+
+/* === LOADING STATE === */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-3xl);
+}
+
+/* === FORM LAYOUT === */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.form-row {
+  display: flex;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+/* === FORM FIELDS === */
+.full-width {
+  width: 100% !important;
+}
+
+.half-width {
+  flex: 1;
+  min-width: 0;
+}
+
+::ng-deep .form-card mat-form-field {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+::ng-deep .form-card .mat-mdc-text-field-wrapper {
+  background: white !important;
+  border-radius: var(--radius-base) !important;
+  transition: all var(--transition-base);
+}
+
+::ng-deep .form-card .mat-mdc-form-field:hover .mat-mdc-text-field-wrapper {
+  box-shadow: 0 0 0 1px var(--color-border-light);
+}
+
+::ng-deep .form-card .mat-mdc-form-field.mat-focused .mat-mdc-text-field-wrapper {
+  box-shadow: 0 0 0 2px var(--color-accent-primary);
+}
+
+::ng-deep .form-card .mat-mdc-form-field-outline {
+  color: var(--color-border-light) !important;
+}
+
+::ng-deep .form-card .mat-mdc-form-field.mat-focused .mat-mdc-form-field-outline {
+  color: var(--color-accent-primary) !important;
+}
+
+::ng-deep .form-card mat-label {
+  color: var(--color-text-secondary) !important;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+::ng-deep .form-card input.mat-mdc-input-element,
+::ng-deep .form-card textarea.mat-mdc-input-element {
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-base) !important;
+}
+
+::ng-deep .form-card .mat-mdc-select {
+  color: var(--color-text-primary) !important;
+  font-size: var(--font-size-base) !important;
+}
+
+::ng-deep .form-card .mat-mdc-form-field-hint {
+  color: var(--color-text-tertiary) !important;
+  font-size: var(--font-size-xs) !important;
+  margin-top: var(--spacing-xs);
+}
+
+::ng-deep .form-card .mat-mdc-form-field-error {
+  color: var(--color-error) !important;
+  font-size: var(--font-size-xs) !important;
+  margin-top: var(--spacing-xs);
+}
+
+/* Prefix Styling */
+::ng-deep .form-card .mat-mdc-form-field-text-prefix {
+  color: var(--color-text-tertiary) !important;
+  font-weight: var(--font-weight-medium);
+}
+
+/* === INFO MESSAGE === */
+.info-message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background-color: var(--color-info-light);
+  border: 1px solid var(--color-info);
+  border-radius: var(--radius-base);
+  color: var(--color-info);
+  font-size: var(--font-size-sm);
+  flex: 1;
+  min-width: 0;
+}
+
+.info-message mat-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-message span {
+  flex: 1;
+  line-height: 1.5;
+}
+
+/* === FORM ACTIONS === */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--color-border-subtle);
+  margin-top: var(--spacing-lg);
+}
+
+.form-actions button {
+  min-width: 120px;
+  height: 44px;
+  border-radius: var(--radius-base) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: var(--font-size-base) !important;
+  transition: all var(--transition-base) !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em;
+}
+
+/* Cancel Button */
+.form-actions button[type="button"] {
+  background-color: transparent !important;
+  color: var(--color-text-secondary) !important;
+  border: 1px solid var(--color-border-light) !important;
+}
+
+.form-actions button[type="button"]:hover {
+  background-color: var(--color-surface-light) !important;
+  border-color: var(--color-border-default) !important;
+  color: var(--color-text-primary) !important;
+}
+
+/* Submit Button */
+.form-actions button[color="primary"] {
+  background-color: var(--color-accent-primary) !important;
+  color: var(--color-text-inverse) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.form-actions button[color="primary"]:not([disabled]):hover {
+  background-color: var(--color-accent-hover) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px);
+}
+
+.form-actions button[disabled] {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* === SELECT DROPDOWN STYLING === */
+::ng-deep .mat-mdc-select-panel {
+  background: white !important;
+  border-radius: var(--radius-base) !important;
+  box-shadow: var(--shadow-xl) !important;
+  margin-top: 8px;
+}
+
+::ng-deep .mat-mdc-option {
+  font-size: var(--font-size-base) !important;
+  color: var(--color-text-primary) !important;
+  padding: var(--spacing-sm) var(--spacing-md) !important;
+}
+
+::ng-deep .mat-mdc-option:hover {
+  background-color: var(--color-surface-light) !important;
+}
+
+::ng-deep .mat-mdc-option.mat-mdc-option-active {
+  background-color: var(--color-accent-subtle) !important;
+  color: var(--color-accent-primary) !important;
+}
+
+::ng-deep .mat-mdc-option.mdc-list-item--selected:not(.mat-mdc-option-multiple) {
+  background-color: var(--color-accent-subtle) !important;
+  color: var(--color-accent-primary) !important;
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .half-width {
+    width: 100% !important;
+  }
+  
+  ::ng-deep .form-card .mat-mdc-card-header {
+    padding: var(--spacing-lg) !important;
+  }
+  
+  ::ng-deep .form-card .mat-mdc-card-content {
+    padding: var(--spacing-lg) !important;
+  }
+  
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+/* === TEXTAREA SPECIFIC === */
+::ng-deep .form-card textarea.mat-mdc-input-element {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.6;
+  font-family: inherit;
 }

@@ -218,12 +218,21 @@
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.stage-badge span {
+  display: inline-block;
+  line-height: 1.2;
 }
 
 .stage-icon {
   font-size: 16px !important;
   width: 16px !important;
   height: 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 /* Stage-specific colors */
@@ -238,8 +247,8 @@
 }
 
 .stage-termsheet-submitted {
-  background-color: #fef3c7; /* Amber light */
-  color: #92400e; /* Amber dark */
+  background-color: var(--color-purple-100);
+  color: var(--color-purple-800);
 }
 
 .stage-closed {

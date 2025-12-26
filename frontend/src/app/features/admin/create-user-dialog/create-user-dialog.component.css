@@ -17,7 +17,7 @@
 .dialog-header h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-text-inverse) !important;
   margin: 0;
   letter-spacing: -0.01em;
 }
@@ -30,7 +30,7 @@
 
 .close-btn:hover {
   background: #f1f5f9 !important;
-  color: #0f172a !important;
+  color: var(--color-text-inverse) !important;
 }
 
 .close-btn mat-icon {
@@ -154,7 +154,15 @@
 }
 
 .create-btn {
-  background: #0f172a !important;
+  background-color: var(--color-accent-primary) !important;
+  color: var(--color-text-inverse) !important;
+  padding: var(--spacing-md) var(--spacing-lg) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  border-radius: var(--radius-base) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-base) !important;
+  min-width: 140px;
+  /* background: #0f172a !important;
   color: white !important;
   font-size: 14px !important;
   font-weight: 500 !important;
@@ -162,12 +170,13 @@
   padding: 0 20px !important;
   height: 36px !important;
   border: none !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important; */
 }
 
 .create-btn:hover:not([disabled]) {
-  background: #1e293b !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  background-color: var(--color-accent-hover) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px);
 }
 
 .create-btn:disabled {

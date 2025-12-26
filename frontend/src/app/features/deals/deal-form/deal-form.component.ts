@@ -65,11 +65,15 @@ export class DealFormComponent implements OnInit {
   }
   
   private initForm(): void {
+    // In create mode: dealValue enabled for all users
+    // In edit mode: dealValue disabled for USER, enabled for ADMIN (but ADMIN uses separate endpoint)
+    const dealValueDisabled = this.isEditMode && !this.isAdmin;
+    
     this.dealForm = this.fb.group({
       clientName: ['', [Validators.required, Validators.minLength(2)]],
       dealType: ['', Validators.required],
       sector: ['', Validators.required],
-      dealValue: [{ value: '', disabled: !this.isAdmin }, [Validators.required, Validators.min(0)]],
+      dealValue: [{ value: '', disabled: dealValueDisabled }, [Validators.required, Validators.min(0)]],
       currentStage: [{ value: DealStage.Prospect, disabled: this.isEditMode }, Validators.required],
       summary: ['', [Validators.required, Validators.minLength(10)]],
       assignedTo: ['']

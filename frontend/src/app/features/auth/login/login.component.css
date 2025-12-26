@@ -86,11 +86,15 @@
 
 .form-field .mat-mdc-text-field-wrapper {
   background-color: var(--color-surface-light) !important;
-  border-radius: var(--radius-base) !important;
+  border-radius: 12px !important;
 }
 
 .form-field .mat-mdc-form-field-focus-overlay {
   background-color: transparent !important;
+}
+
+.form-field .mat-mdc-form-field-outline {
+  border-radius: 12px !important;
 }
 
 .input-icon {

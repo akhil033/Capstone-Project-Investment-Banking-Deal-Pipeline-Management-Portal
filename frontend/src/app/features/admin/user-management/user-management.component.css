@@ -26,8 +26,16 @@
 }
 
 .add-user-btn {
-  background: #0f172a !important;
-  color: white !important;
+  background-color: var(--color-accent-primary) !important;
+  color: var(--color-text-inverse) !important;
+  padding: var(--spacing-md) var(--spacing-lg) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  border-radius: var(--radius-base) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-base) !important;
+  min-width: 140px;
+  /* background: var(--color-accent-primary) !important;
+  color: var(--color-text-inverse) !important;
   font-weight: 500 !important;
   border-radius: 8px !important;
   padding: 0 16px !important;
@@ -38,16 +46,17 @@
   gap: 6px !important;
   transition: all 0.2s ease !important;
   border: none !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: var(--shadow-sm) !important; */
 }
 
 .add-user-btn:hover {
-  background: #1e293b !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  background-color: var(--color-accent-hover) !important;
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-1px);
 }
 
 .add-user-btn mat-icon {
+  margin-right: var(--spacing-sm);
   font-size: 18px !important;
   width: 18px !important;
   height: 18px !important;

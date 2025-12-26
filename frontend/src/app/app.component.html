@@ -15,12 +15,8 @@
       </div>
       
       <div class="topbar-right">
-        <div class="user-info">
-          <span class="user-name">{{ currentUser.username }}</span>
-          <span class="user-role badge-neutral">{{ getRoleBadgeText() }}</span>
-        </div>
-        
         <button mat-button [matMenuTriggerFor]="userMenu" class="user-menu-trigger">
+          <span class="user-role badge-neutral">{{ getRoleBadgeText() }}</span>
           <mat-icon>account_circle</mat-icon>
           <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
         </button>
@@ -30,7 +26,7 @@
             <div class="dropdown-user-name">{{ currentUser.username }}</div>
             <div class="dropdown-user-email">{{ currentUser.email }}</div>
           </div>
-          <mat-divider></mat-divider>
+          <!-- <mat-divider></mat-divider> -->
           <button mat-menu-item (click)="logout()">
             <mat-icon>logout</mat-icon>
             <span>Logout</span>

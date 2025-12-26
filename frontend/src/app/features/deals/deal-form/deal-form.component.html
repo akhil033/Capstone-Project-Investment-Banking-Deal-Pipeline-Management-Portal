@@ -45,7 +45,7 @@
         </div>
         
         <div class="form-row">
-          <!-- Only show deal value in create mode, hide in edit mode -->
+          <!-- Show deal value in create mode for all users -->
           <mat-form-field appearance="outline" class="half-width" *ngIf="!isEditMode">
             <mat-label>Deal Value</mat-label>
             <input matInput type="number" formControlName="dealValue" placeholder="Enter deal value">
@@ -53,7 +53,8 @@
             <mat-error *ngIf="dealForm.get('dealValue')?.invalid">
               {{ getErrorMessage('dealValue') }}
             </mat-error>
-            <mat-hint *ngIf="!isAdmin">Deal value can only be set by admins</mat-hint>
+            <mat-hint *ngIf="!isAdmin">This can only be set once during creation. Contact admin to update later.</mat-hint>
+            <mat-hint *ngIf="isAdmin">Deal value can be updated later from deal detail page.</mat-hint>
           </mat-form-field>
           
           <!-- Show info message in edit mode for admins -->

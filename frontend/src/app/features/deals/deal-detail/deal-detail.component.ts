@@ -13,9 +13,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DealService } from '../../../core/services/deal.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Deal, DealStage, DealType, AddNoteRequest, UpdateDealStageRequest, UpdateDealValueRequest, UpdateDealRequest } from '../../../core/models/deal.model';
+import { DeleteConfirmationDialogComponent } from '../../../shared/components/delete-confirmation-dialog/delete-confirmation-dialog.component';
 
 @Component({
   selector: 'app-deal-detail',
@@ -33,7 +35,8 @@ import { Deal, DealStage, DealType, AddNoteRequest, UpdateDealStageRequest, Upda
     MatSelectModule,
     MatDividerModule,
     MatSnackBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule
   ],
   templateUrl: './deal-detail.component.html',
   styleUrls: ['./deal-detail.component.css']
@@ -52,7 +55,8 @@ export class DealDetailComponent implements OnInit {
     private dealService: DealService,
     private authService: AuthService,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) {
     this.isAdmin = this.authService.isAdmin();
   }
@@ -149,17 +153,39 @@ export class DealDetailComponent implements OnInit {
       return;
     }
     
-    if (confirm(`Are you sure you want to delete the deal with ${this.deal.clientName}?\n\nThis action cannot be undone.`)) {
-      this.dealService.deleteDeal(this.deal.id).subscribe({
-        next: () => {
-          this.snackBar.open('Deal deleted successfully', 'Close', { duration: 3000 });
-          this.router.navigate(['/deals']);
-        },
-        error: (error) => {
-          this.snackBar.open(error.error?.message || 'Failed to delete deal', 'Close', { duration: 3000 });
-        }
-      });
-    }
+    const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
+      width: '500px',
+      maxWidth: '95vw',
+      data: {
+        title: 'Delete Deal',
+        message: 'Are you sure you want to delete this deal?',
+        itemName: this.deal.clientName
+      },
+      disableClose: false,
+      autoFocus: true
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed && this.deal) {
+        this.dealService.deleteDeal(this.deal.id).subscribe({
+          next: () => {
+            this.snackBar.open('Deal deleted successfully', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom'
+            });
+            this.router.navigate(['/deals']);
+          },
+          error: (error) => {
+            this.snackBar.open(error.error?.message || 'Failed to delete deal', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom'
+            });
+          }
+        });
+      }
+    });
   }
   
   onBack(): void {

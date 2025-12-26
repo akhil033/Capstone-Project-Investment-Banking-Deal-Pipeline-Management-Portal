@@ -12,6 +12,7 @@ import { DealService } from '../../../core/services/deal.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Deal, DealStage } from '../../../core/models/deal.model';
 import { DealEditDialogComponent } from '../deal-edit-dialog/deal-edit-dialog.component';
+import { DeleteConfirmationDialogComponent } from '../../../shared/components/delete-confirmation-dialog/delete-confirmation-dialog.component';
 
 @Component({
   selector: 'app-deal-list',
@@ -43,10 +44,8 @@ export class DealListComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.isAdmin = this.authService.isAdmin();
-    // Set columns based on admin role
-    this.displayedColumns = this.isAdmin 
-      ? ['clientName', 'dealType', 'stage', 'dealValue', 'updatedAt', 'actions']
-      : ['clientName', 'dealType', 'stage', 'updatedAt', 'actions'];
+    // All users can see deal values
+    this.displayedColumns = ['clientName', 'dealType', 'stage', 'dealValue', 'updatedAt', 'actions'];
   }
   
   ngOnInit(): void {
@@ -89,24 +88,50 @@ export class DealListComponent implements OnInit {
         this.loadDeals();
         this.snackBar.open('Deal updated successfully', 'Close', { 
           duration: 3000,
-          horizontalPosition: 'end',
-          verticalPosition: 'top'
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom'
         });
       }
     });
   }
   
-  deleteDeal(deal: Deal): void {
-    if (confirm(`Are you sure you want to delete the deal with ${deal.clientName}?\n\nThis action cannot be undone.`)) {
-      this.dealService.deleteDeal(deal.id).subscribe({
-        next: () => {
-          this.loadDeals();
-        },
-        error: (error) => {
-          console.error('Failed to delete deal:', error);
-        }
-      });
-    }
+  deleteDeal(event: Event, deal: Deal): void {
+    event?.stopPropagation(); // Prevent row click
+    
+    const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
+      width: '500px',
+      maxWidth: '95vw',
+      data: {
+        title: 'Delete Deal',
+        message: 'Are you sure you want to delete this deal?',
+        itemName: deal.clientName
+      },
+      disableClose: false,
+      autoFocus: true
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.dealService.deleteDeal(deal.id).subscribe({
+          next: () => {
+            this.loadDeals();
+            this.snackBar.open('Deal deleted successfully', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom'
+            });
+          },
+          error: (error) => {
+            console.error('Failed to delete deal:', error);
+            this.snackBar.open('Failed to delete deal', 'Close', {
+              duration: 3000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom'
+            });
+          }
+        });
+      }
+    });
   }
   
   createDeal(): void {

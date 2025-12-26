@@ -16,6 +16,15 @@
   overflow: hidden;
 }
 
+.enterprise-dialog ::ng-deep .mat-mdc-dialog-surface {
+  overflow: hidden !important;
+}
+
+.enterprise-dialog ::ng-deep .mat-mdc-dialog-content {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
 /* ==========================================
    DIALOG HEADER
    ========================================== */
@@ -264,7 +273,7 @@
 
 .field-input ::ng-deep .mat-mdc-form-field-outline {
   border-color: var(--color-slate-300);
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .field-input ::ng-deep .mat-mdc-form-field-outline-thick {
@@ -276,9 +285,22 @@
   border-color: var(--color-slate-400);
 }
 
-.field-input ::ng-deep .mat-mdc-input-element {
+.field-input ::ng-deep .mat-mdc-input-element,
+.field-input ::ng-deep .mat-mdc-select-value {
   color: var(--color-slate-800);
   font-size: 14px;
+  padding: 0 4px;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+}
+
+.field-input ::ng-deep .mat-mdc-form-field-infix {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
 }
 
 .field-input ::ng-deep .mat-mdc-form-field-label {
@@ -440,6 +462,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 4px 0;
+}
+
+.stage-option mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 /* ==========================================

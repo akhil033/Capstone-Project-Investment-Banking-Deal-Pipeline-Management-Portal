@@ -57,14 +57,14 @@
       <ng-container matColumnDef="stage">
         <th mat-header-cell *matHeaderCellDef>Stage</th>
         <td mat-cell *matCellDef="let deal">
-          <span class="stage-badge" [ngClass]="getStageClass(deal.stage)">
-            <mat-icon class="stage-icon">{{ getStageIcon(deal.stage) }}</mat-icon>
-            <span>{{ formatStageName(deal.stage) }}</span>
+          <span class="stage-badge" [ngClass]="getStageClass(deal.currentStage)">
+            <mat-icon class="stage-icon">{{ getStageIcon(deal.currentStage) }}</mat-icon>
+            <span>{{ formatStageName(deal.currentStage) }}</span>
           </span>
         </td>
       </ng-container>
       
-      <!-- Deal Value Column (Admin Only) -->
+        <!-- Deal Value Column -->
       <ng-container matColumnDef="dealValue">
         <th mat-header-cell *matHeaderCellDef>Value</th>
         <td mat-cell *matCellDef="let deal" class="value-cell">
@@ -105,7 +105,7 @@
             <button 
               *ngIf="isAdmin"
               mat-icon-button 
-              (click)="deleteDeal(deal)" 
+              (click)="deleteDeal($event, deal)" 
               matTooltip="Delete Deal"
               class="action-button delete-button">
               <mat-icon>delete</mat-icon>

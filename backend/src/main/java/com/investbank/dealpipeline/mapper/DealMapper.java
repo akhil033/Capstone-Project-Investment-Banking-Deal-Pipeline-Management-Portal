@@ -14,25 +14,21 @@ public class DealMapper {
             return null;
         }
         
-        DealResponse.DealResponseBuilder builder = DealResponse.builder()
+        // Include deal value for all roles - users can see values but only admins can update them
+        return DealResponse.builder()
                 .id(deal.getId())
                 .clientName(deal.getClientName())
                 .dealType(deal.getDealType())
                 .sector(deal.getSector())
+                .dealValue(deal.getDealValue())
                 .currentStage(deal.getCurrentStage())
                 .summary(deal.getSummary())
                 .notes(deal.getNotes())
                 .createdBy(deal.getCreatedBy())
                 .assignedTo(deal.getAssignedTo())
                 .createdAt(deal.getCreatedAt())
-                .updatedAt(deal.getUpdatedAt());
-        
-        // Only include deal value for ADMIN role
-        if (userRole == Role.ADMIN) {
-            builder.dealValue(deal.getDealValue());
-        }
-        
-        return builder.build();
+                .updatedAt(deal.getUpdatedAt())
+                .build();
     }
     
     public DealSummaryResponse toSummaryResponse(Deal deal) {

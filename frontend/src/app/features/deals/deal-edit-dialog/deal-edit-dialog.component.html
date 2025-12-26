@@ -126,6 +126,9 @@
                 <label class="field-label">Update to New Stage</label>
                 <mat-form-field class="field-input" appearance="outline">
                   <mat-select formControlName="stage" placeholder="Select new stage">
+                    <mat-select-trigger>
+                      <span>{{ formatStageName(stageForm.value.stage) }}</span>
+                    </mat-select-trigger>
                     <mat-option *ngFor="let stage of dealStages" [value]="stage">
                       <div class="stage-option">
                         <mat-icon>{{ getStageIcon(stage) }}</mat-icon>
