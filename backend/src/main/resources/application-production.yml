@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: deal-pipeline-portal
+  
+  main:
+    allow-bean-definition-overriding: true
+  
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/dealdb}
+      auto-index-creation: true
+  
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:YW55X3NlY3JldF9rZXlfZm9yX2RlYWxfcGlwZWxpbmVfbWFuYWdlbWVudF9wb3J0YWxfc3lzdGVt}
+  expiration: 86400000  # 24 hours in milliseconds
+
+# Logging Configuration for Production
+logging:
+  level:
+    root: INFO
+    com.investbank.dealpipeline: INFO
+    org.springframework.security: WARN
+    org.springframework.data.mongodb: WARN

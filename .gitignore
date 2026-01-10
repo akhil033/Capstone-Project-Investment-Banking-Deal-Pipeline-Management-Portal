@@ -23,9 +23,5 @@ Thumbs.db
 # Docker
 .docker/
 
-# Test Reports
-*_COVERAGE_REPORT.md
-*_TEST_REPORT.md
-test-output.txt
 
 

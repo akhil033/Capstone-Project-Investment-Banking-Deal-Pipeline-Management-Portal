@@ -82,7 +82,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost"));
+        // Allow local development and AWS S3/EC2 origins
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:4200",
+            "http://localhost",
+            "http://deal-pipeline-frontend.s3-website-us-east-1.amazonaws.com",  
+            "http://ec2-54-237-217-31.compute-1.amazonaws.com",  
+            "http://ec2-54-237-217-31.compute-1.amazonaws.com:8080"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);

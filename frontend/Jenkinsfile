@@ -1,0 +1,116 @@
+pipeline {
+    agent any
+    
+    tools {
+        nodejs 'NodeJS-20'
+    }
+    
+    environment {
+        S3_BUCKET = 'deal-pipeline-frontend'  
+        AWS_REGION = 'us-east-1'
+        BACKEND_URL = 'http://ec2-54-237-217-31.compute-1.amazonaws.com:8080'  
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out code from GitHub...'
+                checkout scm
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                dir('frontend') {
+                    echo 'Installing npm dependencies...'
+                    sh 'npm ci'
+                }
+            }
+        }
+        
+        stage('Run Tests') {
+            steps {
+                dir('frontend') {
+                    echo 'Running frontend tests...'
+                    sh 'npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage'
+                }
+            }
+            post {
+                always {
+                    publishHTML(target: [
+                        reportDir: 'frontend/coverage/deal-pipeline-frontend',
+                        reportFiles: 'index.html',
+                        reportName: 'Code Coverage Report'
+                    ])
+                }
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                dir('frontend') {
+                    echo 'Building Angular application...'
+                    sh 'npm run build -- --configuration production'
+                }
+            }
+        }
+        
+        stage('Deploy to S3') {
+            steps {
+                dir('frontend/dist/deal-pipeline-frontend/browser') {
+                    withCredentials([
+                        string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+                        string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                    ]) {
+                        echo 'Deploying to S3...'
+                        sh """
+                            aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+                            aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+                            aws configure set default.region ${AWS_REGION}
+                            
+                            aws s3 sync . s3://${S3_BUCKET}/ \
+                                --delete \
+                                --cache-control 'max-age=31536000' \
+                                --exclude 'index.html'
+                            
+                            aws s3 cp index.html s3://${S3_BUCKET}/index.html \
+                                --cache-control 'no-cache, no-store, must-revalidate'
+                        """
+                    }
+                }
+            }
+        }
+        
+        stage('Verify Deployment') {
+            steps {
+                echo 'Verifying S3 deployment...'
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    script {
+                        def objects = sh(
+                            script: "aws s3 ls s3://${S3_BUCKET}/ --recursive | wc -l",
+                            returnStdout: true
+                        ).trim()
+                        echo "Total files in S3: ${objects}"
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Frontend deployment successful!'
+            echo "Frontend URL: http://${S3_BUCKET}.s3-website-${AWS_REGION}.amazonaws.com"
+        }
+        failure {
+            echo 'Frontend deployment failed!'
+        }
+        always {
+            // Clean up
+            sh 'rm -rf frontend/node_modules frontend/dist'
+        }
+    }
+}
