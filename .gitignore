@@ -32,5 +32,7 @@ config
 # Temporary deployment scripts (should be in docs/deployment/)
 *.sh
 
+# Readme Files
+AWS-DEPLOYMENT.md
 
 

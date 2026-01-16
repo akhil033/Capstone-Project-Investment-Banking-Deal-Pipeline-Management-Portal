@@ -875,12 +875,3 @@ Capstone-Project-Investment-Banking-Deal-Pipeline-Management-Portal/
 
 This project is developed as part of an academic capstone project for educational purposes.
 
-## Contact
-
-For questions or support, please contact the development team.
-
----
-
-**Version:** 1.0  
-**Last Updated:** January 16, 2026  
-**Status:** Production Ready
