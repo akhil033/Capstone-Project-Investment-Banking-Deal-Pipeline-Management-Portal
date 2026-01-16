@@ -636,10 +636,6 @@ docker-compose down
 docker-compose down -v
 ```
 
-### AWS Production Deployment
-
-For complete AWS deployment instructions, see [AWS-DEPLOYMENT.md](AWS-DEPLOYMENT.md)
-
 **Production Infrastructure:**
 - **Instance Type:** m7i-flex.large (2 vCPU, 8GB RAM)
 - **Region:** us-east-1
