@@ -253,11 +253,10 @@ A production-grade full-stack application for managing investment banking deal p
 ### Core Functionality
 
 **Deal Management:**
-- Create, view, update, and close deals
-- Track deal stages (Prospect, Pitch, Due Diligence, Negotiation, Closed Won/Lost)
-- Associate deals with clients and owners
-- Financial metrics tracking (deal value, close probability)
-- Expected close date management
+- Create, view, update, and delete deals
+- Track deal stages (Prospect, Under Evaluation, Term Sheet Submited, Closed, Lost)
+- Financial metrics tracking (deal value, deal stage)
+
 
 **User Management (Admin Only):**
 - Create new user accounts with username, email, password, and role
@@ -275,7 +274,7 @@ A production-grade full-stack application for managing investment banking deal p
 ### Deal Lifecycle States
 
 ```
-Prospect -> Pitch -> Due Diligence -> Negotiation -> Closed Won/Lost
+Prospect -> Under Evaluation -> Term Sheet Submited -> Closed -> Lost
 ```
 
 Each deal transitions through these stages with complete audit trail.
@@ -376,12 +375,6 @@ The application automatically seeds test users on first startup via DataInitiali
 
 **Recommended First Login:** Use `admin` / `admin123` for full feature access.
 
-### Password Requirements
-
-For creating new users:
-- Minimum 6 characters
-- At least one letter
-- At least one number
 
 ## API Documentation
 
@@ -390,7 +383,6 @@ For creating new users:
 | Method | Endpoint | Description | Access |
 |--------|----------|-------------|--------|
 | POST | /api/auth/login | User login | Public |
-| POST | /api/auth/register | User registration | Public |
 
 ### Deal Management Endpoints
 
@@ -402,7 +394,6 @@ For creating new users:
 | PUT | /api/deals/{id} | Update deal | Authenticated |
 | DELETE | /api/deals/{id} | Delete deal | Authenticated |
 | PUT | /api/deals/{id}/stage | Update deal stage | Authenticated |
-| PUT | /api/deals/{id}/close | Close deal | Authenticated |
 
 ### User Management Endpoints
 
@@ -419,13 +410,6 @@ For creating new users:
 |--------|----------|-------------|--------|
 | GET | /health | Application health status | Public |
 
-Returns:
-```json
-{
-  "status": "UP",
-  "service": "deal-pipeline-backend"
-}
-```
 
 ## CI/CD Pipeline
 
@@ -433,7 +417,7 @@ Returns:
 
 The application uses GitHub webhooks for automatic deployments:
 
-1. **Webhook URL:** `http://18.206.89.182:8090/github-webhook/`
+1. **Webhook URL:** `<jenkins url>/github-webhook/`
 2. **Content Type:** application/json
 3. **Events:** Push events
 4. **Status:** Active
@@ -445,8 +429,8 @@ The application uses GitHub webhooks for automatic deployments:
 pipeline {
     agent any
     environment {
-        AWS_REGION = 'us-east-1'
-        AWS_ACCOUNT_ID = '242874195027'
+        AWS_REGION = '<Account Region>'
+        AWS_ACCOUNT_ID = '<your Account ID>'
         ECR_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/deal-pipeline-backend"
         IMAGE_TAG = "latest"
     }
@@ -465,8 +449,8 @@ pipeline {
 pipeline {
     agent any
     environment {
-        AWS_REGION = 'us-east-1'
-        AWS_ACCOUNT_ID = '242874195027'
+        AWS_REGION = '<Account Region>'
+        AWS_ACCOUNT_ID = '<Your Account ID>'
         ECR_REPO = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/deal-pipeline-frontend"
         IMAGE_TAG = "latest"
     }
@@ -586,7 +570,7 @@ The collection uses these variables:
 - JWT-based stateless authentication
 - BCrypt password hashing (strength 10)
 - Token expiration (24 hours)
-- Secure token storage in HTTP-only cookies (recommended)
+- Secure token storage in HTTP-only cookies 
 
 **Authorization:**
 - Role-based access control (RBAC)
@@ -645,8 +629,8 @@ docker-compose down -v
 - **Deployment Time:** 2-3 minutes (automatic)
 
 **Production URLs:**
-- Application: http://deal-pipeline-alb-445487266.us-east-1.elb.amazonaws.com
-- Jenkins: http://18.206.89.182:8090
+- Application: http://(your ALD Public DNS)
+- Jenkins: http://(Public IP):8090
 
 ### Docker Build Commands
 
@@ -866,8 +850,3 @@ Capstone-Project-Investment-Banking-Deal-Pipeline-Management-Portal/
 |-- .gitignore                       # Git ignore rules
 |-- .env.example                     # Environment template
 ```
-
-## License
-
-This project is developed as part of an academic capstone project for educational purposes.
-
