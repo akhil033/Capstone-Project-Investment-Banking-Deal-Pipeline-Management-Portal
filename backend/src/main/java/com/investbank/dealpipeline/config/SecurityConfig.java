@@ -66,6 +66,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/actuator/health/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/deals/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/deals/*/value").hasRole("ADMIN")
@@ -82,10 +83,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow local development and AWS S3/EC2 origins
+        // Allow local development and AWS ALB/EC2 origins
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:4200",
             "http://localhost",
+            "http://deal-pipeline-alb-445487266.us-east-1.elb.amazonaws.com",
             "http://deal-pipeline-frontend.s3-website-us-east-1.amazonaws.com",  
             "http://ec2-54-237-217-31.compute-1.amazonaws.com",  
             "http://ec2-54-237-217-31.compute-1.amazonaws.com:8080"
