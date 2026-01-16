@@ -1,5 +1,7 @@
 package com.investbank.dealpipeline.service;
 
+import com.investbank.dealpipeline.dto.event.DealCreatedEvent;
+import com.investbank.dealpipeline.dto.event.DealStageUpdatedEvent;
 import com.investbank.dealpipeline.dto.request.AddNoteRequest;
 import com.investbank.dealpipeline.dto.request.CreateDealRequest;
 import com.investbank.dealpipeline.dto.request.UpdateDealRequest;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +33,7 @@ public class DealService {
     
     private final DealRepository dealRepository;
     private final DealMapper dealMapper;
+    private final KafkaProducerService kafkaProducerService;
     
     @Transactional
     public DealResponse createDeal(CreateDealRequest request, String userId, Role userRole) {
@@ -49,6 +53,25 @@ public class DealService {
                 .build();
         
         Deal savedDeal = dealRepository.save(deal);
+        
+        // Publish Deal Created Event to Kafka
+        DealCreatedEvent event = DealCreatedEvent.builder()
+                .eventId(UUID.randomUUID().toString())
+                .eventType("DEAL_CREATED")
+                .timestamp(LocalDateTime.now())
+                .dealId(savedDeal.getId())
+                .clientName(savedDeal.getClientName())
+                .dealType(savedDeal.getDealType())
+                .sector(savedDeal.getSector())
+                .dealValue(savedDeal.getDealValue())
+                .currentStage(savedDeal.getCurrentStage().name())
+                .summary(savedDeal.getSummary())
+                .createdBy(savedDeal.getCreatedBy())
+                .assignedTo(savedDeal.getAssignedTo())
+                .build();
+        
+        kafkaProducerService.publishDealCreatedEvent(event);
+        
         return dealMapper.toResponse(savedDeal, userRole);
     }
     
@@ -113,9 +136,24 @@ public class DealService {
         Deal deal = dealRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Deal not found with id: " + id));
         
+        DealStage previousStage = deal.getCurrentStage();
         deal.setCurrentStage(stage);
         deal.setUpdatedAt(LocalDateTime.now());
         Deal updatedDeal = dealRepository.save(deal);
+        
+        // Publish Deal Stage Updated Event to Kafka
+        DealStageUpdatedEvent event = DealStageUpdatedEvent.builder()
+                .eventId(UUID.randomUUID().toString())
+                .eventType("DEAL_STAGE_UPDATED")
+                .timestamp(LocalDateTime.now())
+                .dealId(updatedDeal.getId())
+                .clientName(updatedDeal.getClientName())
+                .previousStage(previousStage.name())
+                .newStage(stage.name())
+                .updatedBy("system") // Can be enhanced to track actual user
+                .build();
+        
+        kafkaProducerService.publishDealStageUpdatedEvent(event);
         
         return dealMapper.toResponse(updatedDeal, userRole);
     }

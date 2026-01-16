@@ -16,12 +16,21 @@ Thumbs.db
 
 # Environment
 .env
-.env.example
 .env.local
 .env.*.local
 
 # Docker
 .docker/
+
+# AWS Security - NEVER COMMIT THESE
+*.pem
+*.ppk
+aws-credentials.txt
+credentials
+config
+
+# Temporary deployment scripts (should be in docs/deployment/)
+*.sh
 
 
 

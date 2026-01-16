@@ -7,9 +7,7 @@ spring:
   
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: dealdb
+      uri: ${MONGODB_URI:mongodb://localhost:27017/dealdb}
       auto-index-creation: true
   
   jackson:
@@ -23,17 +21,47 @@ server:
     include-message: always
     include-binding-errors: always
 
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: always
+  health:
+    defaults:
+      enabled: true
+
 # JWT Configuration
 jwt:
   secret: ${JWT_SECRET:YW55X3NlY3JldF9rZXlfZm9yX2RlYWxfcGlwZWxpbmVfbWFuYWdlbWVudF9wb3J0YWxfc3lzdGVt}
-  expiration: 86400000  # 24 hours in milliseconds
+  expiration: 86400000
+
+# Kafka Configuration
+kafka:
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  topic:
+    deal-events: deal-events
+  producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    acks: all
+    retries: 3
+  consumer:
+    group-id: deal-pipeline-consumer-group
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    auto-offset-reset: earliest
 
 # Logging
 logging:
   level:
-    "[com.investbank]": DEBUG
-    "[org.springframework.security]": DEBUG
-    "[org.springframework.data.mongodb]": DEBUG
+    root: INFO
+    com.investbank.dealpipeline: ${LOG_LEVEL:INFO}
+    org.springframework.security: WARN
+    org.springframework.data.mongodb: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
